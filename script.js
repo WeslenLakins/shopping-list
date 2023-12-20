@@ -62,6 +62,23 @@ function clearItems() {
   checkUI()
 }
 
+function filterItems(e) {
+  // Get all list items
+  const items = itemList.querySelectorAll('li')
+  // Get text and convert to lowercase
+  const text = e.target.value.toLowerCase()
+
+  // Loop through items
+  items.forEach((item) => {
+    const itemName = item.firstChild.textContent.toLowerCase()
+    if (itemName.indexOf(text) !== -1) {
+      item.style.display = 'flex'
+    } else {
+      item.style.display = 'none'
+    }
+  })
+}
+
 function checkUI() {
   const items = itemList.querySelectorAll('li')
   if (items.length === 0) {
@@ -77,5 +94,6 @@ function checkUI() {
 itemForm.addEventListener('submit', addItem)
 itemList.addEventListener('click', removeItem)
 clearBtn.addEventListener('click', clearItems)
+itemFilter.addEventListener('input', filterItems)
 
 checkUI()
