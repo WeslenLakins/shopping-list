@@ -3,14 +3,12 @@ const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
-
-// EVENT HANDLERS
+const formBtn = itemForm.querySelector('button');
+let isEditMode = false;
 
 function displayItems() {
   const itemsFromStorage = getItemsFromStorage();
-
   itemsFromStorage.forEach((item) => addItemToDOM(item));
-
   checkUI();
 }
 
@@ -23,6 +21,21 @@ function onAddItemSubmit(e) {
   if (newItem === '') {
     alert('Please add an item');
     return;
+  }
+
+  // Check if in edit mode
+  if (isEditMode) {
+    const itemToEdit = itemList.querySelector('.edit-mode');
+
+    removeItemFromStorage(itemToEdit.textContent);
+    itemToEdit.classList.remove('edit-mode');
+    itemToEdit.remove();
+    isEditMode = false;
+  } else {
+    if (checkIfItemExists(newItem)) {
+      alert('Item already exists!');
+      return;
+    }
   }
 
   // Create item DOM element
@@ -88,7 +101,27 @@ function onClickItem(e) {
   if (e.target.parentElement.classList.contains('remove-item')) {
     // Remove item from localStorage
     removeItem(e.target.parentElement.parentElement);
+  } else {
+    setItemToEdit(e.target);
   }
+}
+
+function checkIfItemExists(item) {
+  const itemsFromStorage = getItemsFromStorage();
+  return itemsFromStorage.includes(item);
+}
+
+function setItemToEdit(item) {
+  isEditMode = true;
+
+  itemList
+    .querySelectorAll('li')
+    .forEach((i) => i.classList.remove('edit-mode'));
+
+  item.classList.add('edit-mode');
+  formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+  formBtn.style.backgroundColor = '#228b22';
+  itemInput.value = item.textContent;
 }
 
 function removeItem(item) {
@@ -139,8 +172,9 @@ function filterItems(e) {
   });
 }
 
-// CHECK UI STATE
 function checkUI() {
+  itemInput.value = '';
+
   const items = itemList.querySelectorAll('li');
   if (items.length === 0) {
     clearBtn.style.display = 'none';
@@ -149,9 +183,12 @@ function checkUI() {
     clearBtn.style.display = 'block';
     itemFilter.style.display = 'block';
   }
-}
 
-// INITIALIZE APP
+  formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+  formBtn.style.backgroundColor = '#333';
+
+  isEditMode = false;
+}
 
 function init() {
   // EVENT LISTENERS
