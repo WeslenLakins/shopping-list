@@ -42,9 +42,9 @@ To use the website:
 
 Clone the repository and open `index.html` in your browser to start using the app locally.
 
-```Git Bash
-git clone [your-repository-link]
-cd [repository-name]
+```bash
+git clone https://github.com/WeslenLakins/shopping-list.git
+cd shopping-list
 open index.html
 ```
 
